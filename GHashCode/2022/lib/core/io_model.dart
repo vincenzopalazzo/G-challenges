@@ -58,7 +58,7 @@ class Output {
     file = File(outPath);
   }
 
-  Future<void> writeLine(dynamic value) async {
-    await file!.writeAsString(value, mode: FileMode.append, flush: true);
+  void writeLine(dynamic value) {
+    file!.writeAsStringSync(value, mode: FileMode.append, flush: true);
   }
 }

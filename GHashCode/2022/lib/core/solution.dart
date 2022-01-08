@@ -46,7 +46,7 @@ abstract class Solution<T> {
   }
 
   /// method that must implement the logic to parse the input file
-  Future<T> parse();
+  T parse();
 
   /// method that need to implement the logic to solve the problem
   dynamic solve(T input);
@@ -63,8 +63,10 @@ abstract class Solution<T> {
     if (output == null) {
       throw Exception("Output need to be initialized");
     }
-    var fromFile = await parse();
+    await input!.parse();
+    var fromFile = parse();
     var result = solve(fromFile);
+    output!.init();
     store(result);
   }
 
