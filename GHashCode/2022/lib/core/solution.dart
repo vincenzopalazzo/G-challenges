@@ -5,7 +5,8 @@ import 'package:logger/logger.dart';
 ///
 /// Author: https://github.com/vincenzopalazzo
 abstract class Solution<T> {
-  final _logger = Logger();
+  final _logger = Logger(level: Level.info, printer: PrettyPrinter());
+  bool silent = false;
   // Input Wrapper that contains all the information
   // to split the file input
   late final Input? input;
@@ -14,7 +15,10 @@ abstract class Solution<T> {
   late final Output? output;
 
   /// write a informal and well format log message
-  void log(String message, {dynamic options}) {
+  void log(dynamic message, {dynamic options}) {
+    if (silent) {
+      return;
+    }
     if (options != null) {
       _logger.i("$message -> $options");
     } else {
@@ -23,7 +27,10 @@ abstract class Solution<T> {
   }
 
   /// write a well format message log for debug
-  void debug(String message, {dynamic options}) {
+  void debug(dynamic message, {dynamic options}) {
+    if (silent) {
+      return;
+    }
     if (options != null) {
       _logger.d("$message -> $options");
     } else {
@@ -32,12 +39,14 @@ abstract class Solution<T> {
   }
 
   /// print message in a raw format with the dart print function
-  void rawLog(String message) {
-    print(message);
+  void rawLog(dynamic message) {
+    if (!silent) {
+      print(message);
+    }
   }
 
   /// method that must implement the logic to parse the input file
-  T parse();
+  Future<T> parse();
 
   /// method that need to implement the logic to solve the problem
   dynamic solve(T input);
@@ -47,20 +56,21 @@ abstract class Solution<T> {
 
   // Internal method that run all the code to run
   // the problem and call the method in the correct order.
-  void run() {
+  Future<void> run() async {
     if (input == null) {
       throw Exception("Input need to be initialized");
     }
     if (output == null) {
       throw Exception("Output need to be initialized");
     }
-    var fromFile = parse();
+    var fromFile = await parse();
     var result = solve(fromFile);
     store(result);
   }
 
-  void init(Input input, Output output) {
+  void init(Input input, Output output, bool silent) {
     this.input = input;
     this.output = output;
+    this.silent = silent;
   }
 }

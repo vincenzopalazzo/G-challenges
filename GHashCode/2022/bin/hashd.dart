@@ -6,20 +6,20 @@ import 'package:hashd/core/solution.dart';
 import 'package:hashd/practice_ex/pizzeria_sol.dart';
 import 'package:logger/logger.dart';
 
-final String PROBLEM_KEY = "problem";
-final String INPUT_KEY = "input";
-final String OUTPUT_KEY = "output";
-final String SILENT = "silent";
+const String problemKey = "problem";
+const String inputKey = "input";
+const String outputKey = "output";
+const String silentKey = "silent";
 
 ArgResults configureCommandLine(List<String> args) {
   var parser = ArgParser();
-  parser.addOption(PROBLEM_KEY, abbr: "p", help: "Name of the problem");
-  parser.addOption(INPUT_KEY,
+  parser.addOption(problemKey, abbr: "p", help: "Name of the problem");
+  parser.addOption(inputKey,
       abbr: "i",
       help: "Input path where the input is located inside the resources");
-  parser.addOption(OUTPUT_KEY,
+  parser.addOption(outputKey,
       abbr: "o", help: "Output name where to store the result to upload");
-  parser.addFlag(SILENT,
+  parser.addFlag(silentKey,
       abbr: "s",
       help: "Avoid to print value on the console, useful to make",
       defaultsTo: false);
@@ -35,30 +35,31 @@ ArgResults configureCommandLine(List<String> args) {
     parser.options.forEach((String key, Option value) {
       print("\t--$key   -${value.abbr}: ${value.help}");
     });
-    print("\n\tCommand Example ./hashd --problem one_pizza --input <path> --output <path>\n\n");
+    print(
+        "\n\tCommand Example ./hashd --problem one_pizza --input <path> --output <path>\n\n");
     exit(0);
   });
   return parser.parse(args);
 }
 
-Map<String, Solution> PROBLEMS = {
+Map<String, Solution> problems = {
   "one_pizza": OnePizza(),
 };
 
-void main(List<String> arguments) {
+Future<void> main(List<String> arguments) async {
   var logger = Logger();
   var cmd = configureCommandLine(arguments);
 
-  var problem = cmd[PROBLEM_KEY];
-  var input = cmd[INPUT_KEY];
-  var output = cmd[OUTPUT_KEY];
+  var problem = cmd[problemKey];
+  var input = cmd[inputKey];
+  var output = cmd[outputKey];
 
-  if (!PROBLEMS.containsKey(problem)) {
+  if (!problems.containsKey(problem)) {
     logger.e("Problem with name $problem is not implemented");
     exit(1);
   }
-  var solution = PROBLEMS[problem]!;
-  solution.init(Input(input), Output(output));
-  solution.run();
+  var solution = problems[problem]!;
+  solution.init(Input(input), Output(output), cmd[silentKey]!);
+  await solution.run();
   exit(0);
 }
