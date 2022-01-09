@@ -26,7 +26,7 @@ compete: build
 	./hashd --problem $(PROBLEM) --input inputs/one_pizza/a_an_example.in.txt --output output/one_pizza/a_an_example.out.txt -s;
 	./hashd --problem $(PROBLEM) --input inputs/one_pizza/c_coarse.in.txt --output output/one_pizza/c_coarse.out.txt -s;
 	./hashd --problem $(PROBLEM) --input inputs/one_pizza/e_elaborate.in.txt --output output/one_pizza/e_elaborate.out.txt -s;
-	zip -r $(PROBLEM).zip bin lib pubspec.yaml hashd
+	zip -r $(PROBLEM).zip bin lib pubspec.yaml
 
 dep_upgrade:
 	$(CC) pub upgrade --major-versions
