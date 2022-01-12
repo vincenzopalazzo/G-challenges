@@ -56,6 +56,11 @@ class Output {
 
   void init() {
     file = File(outPath);
+    file!.exists().then((value) {
+      if (value) {
+        file!.delete();
+      }
+    });
   }
 
   void writeLine(dynamic value) {
