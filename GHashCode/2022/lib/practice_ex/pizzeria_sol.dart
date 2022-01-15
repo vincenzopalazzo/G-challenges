@@ -6,29 +6,84 @@ import 'package:hashd/practice_ex/model.dart';
 ///
 /// Author: https://github.com/vincenzopalazzo
 class OnePizza extends Solution<Restaurant> {
-  @override
-  Set<String> solve(Restaurant input) {
-    // Make the pizza
-    var pizza = <String>{};
-    var dislikeStatistic = <String>{};
-    for (var element in input.clients) {
-      pizza.addAll(element.preference);
-      dislikeStatistic.addAll(element.dislike);
+  Map<String, int> likeCounter = {};
+  Map<String, int> dislikeCounter = {};
+  int totLikeIngredient = 0;
+  int totDislikeIngredient = 0;
+
+  void addLikeIngredient(String ingredient) {
+    if (likeCounter.containsKey(ingredient)) {
+      var counter = likeCounter[ingredient]!;
+      likeCounter[ingredient] = counter + 1;
+      return;
     }
-    /* Set<Statistic> dislikeStatistic = {};
-    // O(C * D * LOG D)
-    for (var element in input.clients) {
-      for (var element in element.dislike) {
-        var elem = dislikeStatistic.lookup(element);
-        if (elem != null) {
-          elem.increase();
-        } else {
-          dislikeStatistic.add(Statistic(ingridiend: element));
-        }
+    totLikeIngredient++;
+    likeCounter[ingredient] = 1;
+  }
+
+  void addDislikeIngredient(String ingredient) {
+    if (dislikeCounter.containsKey(ingredient)) {
+      var counter = dislikeCounter[ingredient]!;
+      dislikeCounter[ingredient] = counter + 1;
+      return;
+    }
+    totDislikeIngredient++;
+    dislikeCounter[ingredient] = 1;
+  }
+
+  /// First step of the algorithm
+  /// fill the map to take into count the number of ingredients
+  /// TODO: we can avoid to feel the map? but we can just count the
+  /// unique ingredient?
+  /// Time Complexity O(N)
+  void fillCounterMaps(Restaurant restaurant) {
+    for (var client in restaurant.clients) {
+      for (var element in client.preference) {
+        addLikeIngredient(element);
       }
-    }*/
-    // O(N)
-    return pizza.difference(dislikeStatistic);
+      for (var element in client.dislike) {
+        addDislikeIngredient(element);
+      }
+    }
+  }
+
+  /// Second and third step of the solution, we
+  /// calculate the rank of the client from the following formula
+  /// like_rank = client_like / tot_like
+  /// dislike_rank = -(client_dislike / tot_dislike) + 1
+  /// user_rank = like_rank + dislike_rank
+  ///
+  /// And at the end sort the List of client by rank
+  /// Time complexity O(N log N)
+  void rankingUserByLike(List<Client> clients) {
+    for (var client in clients) {
+      client.likeRank = client.preference.length / totLikeIngredient;
+      client.dislikeRank = -(client.dislike.length / totDislikeIngredient) + 1;
+      client.rank = client.likeRank + client.dislikeRank;
+    }
+    // Sort by rank
+    clients.sort();
+    rawLog(clients);
+  }
+
+  /// The last step is to make the pizza with the rank result
+  /// so we give more important to people with a high rank
+  /// due the sorting list of client by rank.
+  ///
+  /// Time complexity O(Clients * Ingredient)
+  void makePizza(Pizza pizza, List<Client> clients) {
+    for (var client in clients) {
+      pizza.addClientChoice(client);
+    }
+  }
+
+  @override
+  Pizza solve(Restaurant input) {
+    fillCounterMaps(input);
+    rankingUserByLike(input.clients);
+    var pizza = Pizza();
+    makePizza(pizza, input.clients);
+    return pizza;
   }
 
   @override
@@ -53,14 +108,10 @@ class OnePizza extends Solution<Restaurant> {
 
   @override
   void store(result) {
-    if (result is! Set<String>) {
+    if (result is! Pizza) {
       throw Exception("Wrong type of the result");
     }
-    StringBuffer line = StringBuffer("${result.length} ");
-    for (var element in result) {
-      line.write("$element ");
-    }
-    output!.writeLine(line.toString());
-    rawLog(line);
+    output!.writeLine(result.toString());
+    rawLog(result.toString());
   }
 }

@@ -59,6 +59,7 @@ class Output {
     file!.exists().then((value) {
       if (value) {
         file!.delete();
+        file!.create();
       }
     });
   }

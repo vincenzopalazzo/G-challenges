@@ -4,30 +4,52 @@ class Restaurant {
   Restaurant({required this.clients});
 }
 
-class Client {
+class Client extends Comparable {
   Client({required this.preference, required this.dislike});
 
   Set<String> preference;
   Set<String> dislike;
-}
+  double likeRank = -1;
+  double dislikeRank = -1;
+  double rank = -1;
 
-class Statistic {
-  final String ingridiend;
-  int counter;
-
-  Statistic({required this.ingridiend, this.counter = 1});
-
-  void increase() {
-    counter++;
+  @override
+  int compareTo(other) {
+    if (rank > other.rank) {
+      return -1;
+    } else if (rank < other.rank) {
+      return 1;
+    }
+    return 0;
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Statistic &&
-          runtimeType == other.runtimeType &&
-          ingridiend == other.ingridiend;
+  String toString() {
+    return 'Client{preference: $preference, dislike: $dislike, rank: $rank}';
+  }
+}
+
+class Pizza {
+  Set<String> ingredients = {};
+  Set<String> dislikeIngredients = {};
+
+  bool addClientChoice(Client client) {
+    for (var ingredient in client.preference) {
+      if (dislikeIngredients.contains(ingredient)) {
+        return false;
+      }
+    }
+    ingredients.addAll(client.preference);
+    dislikeIngredients.addAll(client.dislike);
+    return true;
+  }
 
   @override
-  int get hashCode => ingridiend.hashCode;
+  String toString() {
+    StringBuffer line = StringBuffer("${ingredients.length} ");
+    for (var element in ingredients) {
+      line.write("$element ");
+    }
+    return line.toString().trimRight();
+  }
 }
