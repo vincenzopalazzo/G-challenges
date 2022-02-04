@@ -33,7 +33,12 @@ func NewInputReader(pathFile *string) *InputReader {
 
 func (instance *InputReader) Close() {
 	if instance.file != nil {
-		defer instance.file.Close()
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				panic(err)
+			}
+		}(instance.file)
 	}
 }
 
