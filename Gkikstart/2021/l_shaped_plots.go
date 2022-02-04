@@ -9,7 +9,8 @@ import (
 
 func SolveLShapedPlots(filePath *string) {
 	inputs := readInput(filePath)
-	for test, grid := range inputs {
+	for test := 1; test <= len(inputs); test++ {
+		grid := inputs[test]
 		items := LShapedPlots(grid)
 		printResult(test, items)
 	}
@@ -26,60 +27,62 @@ type Segment struct {
 	fixedIndex int64
 	start      int64
 	end        int64
-	lastUpdate int64
 }
 
 func (instance *Segment) isValid() bool {
+	if instance.start == -1 || instance.end == -1 {
+		return false
+	}
 	return math.Abs(float64(instance.end-instance.start)) >= 2
 }
 
-func (instance *Segment) cordinate(reverse bool) string {
-	cordinate := instance.start
+func (instance *Segment) length() int64 {
+	return int64(math.Abs(float64(instance.end - instance.start)))
+}
+
+func (instance *Segment) coordinate(reverse bool, override int64) string {
+	coordinate := instance.start
 	if reverse {
-		cordinate = instance.end
+		coordinate = instance.end
+	}
+	if override >= 0 {
+		coordinate = override
 	}
 	if instance.vertical {
-		return fmt.Sprintf("%d:%d", instance.fixedIndex, cordinate)
+		return fmt.Sprintf("%d:%d", coordinate, instance.fixedIndex)
 	}
-	return fmt.Sprintf("%d:%d", cordinate, instance.fixedIndex)
+	return fmt.Sprintf("%d:%d", instance.fixedIndex, coordinate)
 }
 
 func (instance *Segment) advance(pos int64) bool {
 	if instance.start == -1 {
 		instance.start = pos
-		instance.lastUpdate = pos
 		return true
 	} else {
-		if instance.end == -1 {
+		if instance.end == -1 || math.Abs(float64(pos-instance.end)) == 1 {
 			instance.end = pos
-			instance.lastUpdate = pos
-			return true
-		}
-		if math.Abs(float64(pos-instance.lastUpdate)) < 2 {
-			instance.end = pos
-			instance.lastUpdate = pos
 			return true
 		}
 	}
 	return false
 }
 
-// Main function to solve the problem
+// LShapedPlots Main function to solve the problem
 func LShapedPlots(grid *Grid) int {
-	orizontalMap := make(map[string]*Segment)
+	horizontalMap := make(map[string]*Segment)
 	verticalMap := make(map[string]*Segment)
 
-	orizontalSegments := findSegmentFromLeftToRight(grid, orizontalMap)
+	horizontalSegments := findSegmentFromLeftToRight(grid, horizontalMap)
 	verticalSegments := findSegmentFromTopToBottom(grid, verticalMap)
 	counter := 0
-	for _, segment := range orizontalSegments {
+	for _, segment := range horizontalSegments {
 		if isGood(verticalMap, segment) {
 			counter++
 		}
 	}
 
 	for _, segment := range verticalSegments {
-		if isGood(orizontalMap, segment) {
+		if isGood(horizontalMap, segment) {
 			counter++
 		}
 	}
@@ -87,17 +90,23 @@ func LShapedPlots(grid *Grid) int {
 }
 
 func isGood(storage map[string]*Segment, segment *Segment) bool {
-	cordinate := segment.cordinate(false)
-	_, found := storage[cordinate]
+	coordinate := segment.coordinate(false, -1)
+	seg, found := storage[coordinate]
 	if !found {
-		cordinate = segment.cordinate(true)
-		_, found = storage[cordinate]
-		return found
-	} else {
-		return true
+		coordinate = segment.coordinate(true, -1)
+		seg, found = storage[coordinate]
+		if !found {
+			return false
+		}
 	}
-
-	return false
+	// it is valid only if the shorter segment it
+	// al least half of the biggest
+	lengthOne := seg.length()
+	lengthTwo := segment.length()
+	if lengthOne > lengthTwo {
+		return lengthTwo*2 <= lengthOne
+	}
+	return lengthTwo >= lengthOne*2
 }
 
 // Iterate from left to right and feel the map
@@ -109,19 +118,18 @@ func findSegmentFromLeftToRight(grid *Grid, mapToFill map[string]*Segment) []*Se
 			fixedIndex: row,
 			start:      -1,
 			end:        -1,
-			lastUpdate: -1,
 		}
 		for col := int64(0); col < grid.colSize; col++ {
 			if grid.grid[row][col] == 1 {
 				if !segment.advance(col) {
 					break
 				}
+				if segment.isValid() {
+					coordinate := segment.coordinate(false, col)
+					mapToFill[coordinate] = segment
+					collection = append(collection, segment)
+				}
 			}
-		}
-		if segment.isValid() {
-			cordinate := segment.cordinate(false)
-			mapToFill[cordinate] = segment
-			collection = append(collection, segment)
 		}
 	}
 	return collection
@@ -136,19 +144,18 @@ func findSegmentFromTopToBottom(grid *Grid, mapToFill map[string]*Segment) []*Se
 			fixedIndex: col,
 			start:      -1,
 			end:        -1,
-			lastUpdate: -1,
 		}
 		for row := int64(0); row < grid.rowSize; row++ {
 			if grid.grid[row][col] == 1 {
 				if !segment.advance(row) {
-					continue
+					break
 				}
 			}
-		}
-		if segment.isValid() {
-			collection = append(collection, segment)
-			cordinate := segment.cordinate(false)
-			mapToFill[cordinate] = segment
+			if segment.isValid() {
+				coordinate := segment.coordinate(false, row)
+				mapToFill[coordinate] = segment
+				collection = append(collection, segment)
+			}
 		}
 	}
 	return collection
@@ -159,7 +166,7 @@ func printResult(test int, result int) {
 	fmt.Printf("Case #%d: %d\n", test, result)
 }
 
-// Read the input and return a touple of all the test
+// Read the input and return a tuple of all the test
 func readInput(filePath *string) map[int]*Grid {
 	reader := utils.NewInputReader(filePath)
 
