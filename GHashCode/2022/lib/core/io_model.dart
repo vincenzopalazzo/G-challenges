@@ -65,6 +65,6 @@ class Output {
   }
 
   void writeLine(dynamic value) {
-    file!.writeAsStringSync(value, mode: FileMode.append, flush: true);
+    file!.writeAsStringSync(value + "\n", mode: FileMode.append, flush: true);
   }
 }
