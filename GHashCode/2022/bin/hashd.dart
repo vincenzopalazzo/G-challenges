@@ -4,6 +4,7 @@ import 'package:args/args.dart';
 import 'package:hashd/core/io_model.dart';
 import 'package:hashd/core/solution.dart';
 import 'package:hashd/practice_ex/pizzeria_sol.dart';
+import 'package:hashd/practice_mia/solution.dart';
 import 'package:logger/logger.dart';
 
 const String problemKey = "problem";
@@ -30,8 +31,8 @@ ArgResults configureCommandLine(List<String> args) {
     }
     print("\n  Welcome in the Hash Code daemon 2022");
     print(
-        "  Author: Vincenzo Palazzo <vincenzopalazzodev@gmail.com> Hash Code Team: <TODO>");
-    print("  License: TODO\n");
+        "  Author: Vincenzo Palazzo <vincenzopalazzodev@gmail.com> Hash Code Team: hashcode.dart");
+    print("  License: MIT\n");
     parser.options.forEach((String key, Option value) {
       print("\t--$key   -${value.abbr}: ${value.help}");
     });
@@ -44,6 +45,7 @@ ArgResults configureCommandLine(List<String> args) {
 
 Map<String, Solution> problems = {
   "one_pizza": OnePizza(),
+  "practice_mia": PracticeMia(),
 };
 
 Future<void> main(List<String> arguments) async {
