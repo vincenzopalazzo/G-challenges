@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:kikstartd/core/io_model.dart';
 import 'package:kikstartd/core/solution.dart';
+import 'package:kikstartd/practice/sample/solution.dart';
 
 const String problemKey = "problem";
 const String inputKey = "input";
@@ -14,9 +15,12 @@ ArgResults configureCommandLine(List<String> args) {
   parser.addOption(problemKey, abbr: "p", help: "Name of the problem");
   parser.addOption(inputKey,
       abbr: "i",
-      help: "Input path where the input is located inside the resources");
+      help: "Input path where the input is located inside the resources",
+      defaultsTo: "");
   parser.addOption(outputKey,
-      abbr: "o", help: "Output name where to store the result to upload");
+      abbr: "o",
+      help: "Output name where to store the result to upload",
+      defaultsTo: "");
   parser.addFlag(silentKey,
       abbr: "s",
       help: "Avoid to print value on the console, useful to make",
@@ -27,8 +31,7 @@ ArgResults configureCommandLine(List<String> args) {
       return;
     }
     print("\n  Welcome in the Kikstart daemon 2022");
-    print(
-        "  Author: Vincenzo Palazzo <vincenzopalazzodev@gmail.com> Hash Code Team: hashcode.dart");
+    print("  Author: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>");
     print("  License: MIT\n");
     parser.options.forEach((String key, Option value) {
       print("\t--$key   -${value.abbr}: ${value.help}");
@@ -40,10 +43,12 @@ ArgResults configureCommandLine(List<String> args) {
   return parser.parse(args);
 }
 
-Map<String, Solution> problems = {};
+Map<String, Solution> problems = {
+  "practice_sample": SampleSolution(),
+};
 
 Future<void> main(List<String> arguments) async {
-   var cmd = configureCommandLine(arguments);
+  var cmd = configureCommandLine(arguments);
 
   var problem = cmd[problemKey];
   var input = cmd[inputKey];

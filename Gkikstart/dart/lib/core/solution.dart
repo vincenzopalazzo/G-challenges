@@ -1,4 +1,5 @@
 import 'package:kikstartd/core/io_model.dart';
+import 'package:kikstartd/core/iterator.dart';
 
 /// Generic Solution wrapper of the Hash Code daemon
 ///
@@ -44,13 +45,13 @@ abstract class Solution<T> {
   }
 
   /// method that must implement the logic to parse the input file
-  T parse();
+  IteratorSolution<T> parse(IteratorSolution<T> inputs);
 
   /// method that need to implement the logic to solve the problem
   dynamic solve(T input);
 
   /// method that implement the logic to store the result
-  void store(dynamic result);
+  void store(int test, dynamic result);
 
   // Internal method that run all the code to run
   // the problem and call the method in the correct order.
@@ -62,10 +63,12 @@ abstract class Solution<T> {
       throw Exception("Output need to be initialized");
     }
     await input!.parse();
-    var fromFile = parse();
-    var result = solve(fromFile);
     output!.init();
-    store(result);
+    var fromInput = parse(IteratorSolution());
+    for (var test = 0; test < fromInput.tests; test++) {
+      var result = solve(fromInput.input[test]);
+      store(test, result);
+    }
   }
 
   void init(Input input, Output output, bool silent) {

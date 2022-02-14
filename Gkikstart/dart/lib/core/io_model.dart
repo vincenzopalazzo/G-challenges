@@ -76,7 +76,7 @@ class Output {
   bool isStd = false;
 
   Output(this.outPath) {
-      isStd = outPath.isEmpty;
+    isStd = outPath.isEmpty;
   }
 
   void init() {
@@ -95,7 +95,7 @@ class Output {
   void writeLine(dynamic value) {
     if (isStd) {
       print(value);
-    }else {
+    } else {
       file!.writeAsStringSync(value + "\n", mode: FileMode.append, flush: true);
     }
   }
