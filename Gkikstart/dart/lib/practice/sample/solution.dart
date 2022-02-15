@@ -16,7 +16,8 @@ class SampleSolution extends Solution<CandyDistributor> {
       var candyInBags = input.readInts(candyBags);
       for (var candyInBag in candyInBags) {
         distributor.totCandy += candyInBag;
-        distributor.candyBags.add(CandyBag(candyInBag));
+        // FIXME: the allocation cause TLE, BTW this is logically correct
+        //distributor.candyBags.add(CandyBag(candyInBag));
       }
       inputs.input.add(distributor);
     }

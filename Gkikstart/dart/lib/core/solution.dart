@@ -62,12 +62,17 @@ abstract class Solution<T> {
     if (output == null) {
       throw Exception("Output need to be initialized");
     }
-    await input.parse();
-    output.init();
-    var fromInput = parse(IteratorSolution());
-    for (var test = 1; test <= fromInput.tests; test++) {
-      var result = solve(fromInput.input[test - 1]);
-      store(test, result);
+    try {
+      await input.parse();
+      output.init();
+      var fromInput = parse(IteratorSolution());
+      for (var test = 1; test <= fromInput.tests; test++) {
+        var result = solve(fromInput.input[test - 1]);
+        store(test, result);
+      }
+    } catch (ex, stacktrace) {
+      log(ex);
+      log(stacktrace);
     }
   }
 

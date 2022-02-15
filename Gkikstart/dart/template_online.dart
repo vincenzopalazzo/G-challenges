@@ -157,56 +157,37 @@ abstract class SolutionLocal<T> {
 }
 
 void main() {
-  var solution = SampleSolution();
+  var solution = CentauriSol();
   solution.init(Input(''), Output(''), true);
   solution.run();
 }
 
-/// Put your solution implementation
-class CandyDistributor {
-  int kidsSize = 0;
-  int totCandy = 0;
-  List<CandyBag> candyBags = List.empty(growable: true);
+class Kingdom {
+  Set<String> vowels = {'A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'};
+  String name = '';
+  Kingdom(this.name);
 }
 
-class CandyBag {
-  int candyContained;
-
-  CandyBag(this.candyContained);
-}
-
-class SampleSolution extends SolutionLocal<CandyDistributor> {
+class CentauriSol extends SolutionLocal<Kingdom> {
   @override
-  IteratorSolution<CandyDistributor> parse(
-      IteratorSolution<CandyDistributor> inputs) {
+  IteratorSolution<Kingdom> parse(IteratorSolution<Kingdom> inputs) {
     inputs.tests = input.readInt();
-    log("Tests: ${inputs.tests}");
-    for (var test = 0; test < inputs.tests; test++) {
-      var distributor = CandyDistributor();
-      var inputSize = input.readInts(2);
-      var candyBags = inputSize[0];
-      distributor.kidsSize = inputSize[1];
-      var candyInBags = input.readInts(candyBags);
-      for (var candyInBag in candyInBags) {
-        distributor.totCandy += candyInBag;
-        //distributor.candyBags.add(CandyBag(candyInBag));
-      }
-      inputs.input.add(distributor);
+    for (var test = 1; test <= inputs.tests; test++) {
+      var name = input.splitRawLine().first.trim();
+      inputs.input.add(Kingdom(name));
     }
-
     return inputs;
   }
 
   @override
-  solve(CandyDistributor input) {
-    if (input.kidsSize == 0) {
-      return 0;
+  solve(Kingdom input) {
+    var last = input.name[input.name.length - 1].toLowerCase();
+    if (input.vowels.contains(last)) {
+      return "${input.name} is ruled by Alice.";
+    } else if (last == 'y') {
+      return "${input.name} is ruled by nobody.";
     }
-    var totCandy = input.totCandy;
-    var forEachKids = totCandy ~/ input.kidsSize;
-    log("For each kids: $forEachKids");
-    log("Tot candy: $totCandy");
-    return totCandy - (input.kidsSize * forEachKids);
+    return "${input.name} is ruled by Bob.";
   }
 
   @override
