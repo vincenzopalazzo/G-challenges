@@ -3,13 +3,14 @@ import 'dart:io';
 
 class Input {
   final String inputPath;
-  late List<String>? lines;
+  List<String> lines;
   bool isStd = false;
 
   Input(this.inputPath) {
     if (inputPath.isEmpty) {
       isStd = true;
-      stdin.pipe(stdout);
+      // The following line cause error in the kikstart env
+      // stdin.pipe(stdout);
     }
   }
 
@@ -33,12 +34,12 @@ class Input {
   /// top of the input stream
   int readInt() {
     if (!isStd) {
-      var topLine = lines!.first;
-      lines = lines!.getRange(1, lines!.length).toList();
+      var topLine = lines.first;
+      lines = lines.getRange(1, lines.length).toList();
       var value = topLine.toString().trim();
       return int.parse(value);
     }
-    var line = stdin.readLineSync()!.trim();
+    var line = stdin.readLineSync().trim();
     return int.parse(line);
   }
 
@@ -47,32 +48,32 @@ class Input {
     var list = <int>[];
 
     if (!isStd) {
-      var topLine = lines!.first.toString();
-      lines = lines!.getRange(1, lines!.length).toList();
+      var topLine = lines.first.toString();
+      lines = lines.getRange(1, lines.length).toList();
       topLine.split(pattern).forEach((element) {
         list.add(int.parse(element));
       });
     } else {
       var line = stdin.readLineSync();
-      line!.split(pattern).forEach((element) => list.add(int.parse(element)));
+      line.split(pattern).forEach((element) => list.add(int.parse(element)));
     }
     return list;
   }
 
   List<String> splitRawLine({String pattern = " "}) {
     if (!isStd) {
-      var topLine = lines!.first.toString();
-      lines = lines!.getRange(1, lines!.length).toList();
+      var topLine = lines.first.toString();
+      lines = lines.getRange(1, lines.length).toList();
       return topLine.split(pattern);
     }
     var line = stdin.readLineSync();
-    return line!.split(pattern);
+    return line.split(pattern);
   }
 }
 
 class Output {
-  final String outPath;
-  late final File? file;
+  String outPath;
+  File file;
   bool isStd = false;
 
   Output(this.outPath) {
@@ -84,10 +85,10 @@ class Output {
       return;
     }
     file = File(outPath);
-    file!.exists().then((value) {
+    file.exists().then((value) {
       if (value) {
-        file!.delete();
-        file!.create();
+        file.delete();
+        file.create();
       }
     });
   }
@@ -96,7 +97,7 @@ class Output {
     if (isStd) {
       print(value);
     } else {
-      file!.writeAsStringSync(value + "\n", mode: FileMode.append, flush: true);
+      file.writeAsStringSync(value + "\n", mode: FileMode.append, flush: true);
     }
   }
 }

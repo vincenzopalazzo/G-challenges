@@ -8,10 +8,10 @@ abstract class Solution<T> {
   bool silent = false;
   // Input Wrapper that contains all the information
   // to split the file input
-  late final Input? input;
+  Input input;
   // Output wrapper that contains all the information
   // to store the result on the in a file
-  late final Output? output;
+  Output output;
 
   /// write a informal and well format log message
   void log(dynamic message, {dynamic options}) {
@@ -62,11 +62,11 @@ abstract class Solution<T> {
     if (output == null) {
       throw Exception("Output need to be initialized");
     }
-    await input!.parse();
-    output!.init();
+    await input.parse();
+    output.init();
     var fromInput = parse(IteratorSolution());
-    for (var test = 0; test < fromInput.tests; test++) {
-      var result = solve(fromInput.input[test]);
+    for (var test = 1; test <= fromInput.tests; test++) {
+      var result = solve(fromInput.input[test - 1]);
       store(test, result);
     }
   }

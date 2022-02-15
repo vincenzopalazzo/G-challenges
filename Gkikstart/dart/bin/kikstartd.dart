@@ -1,3 +1,4 @@
+// @dart=2.10
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -58,8 +59,8 @@ Future<void> main(List<String> arguments) async {
     print("Problem with name $problem is not implemented");
     exit(1);
   }
-  var solution = problems[problem]!;
-  solution.init(Input(input), Output(output), cmd[silentKey]!);
+  var solution = problems[problem];
+  solution.init(Input(input), Output(output), cmd[silentKey]);
   await solution.run();
   exit(0);
 }
