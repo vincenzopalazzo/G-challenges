@@ -5,6 +5,7 @@ import 'package:args/args.dart';
 import 'package:kikstartd/core/io_model.dart';
 import 'package:kikstartd/core/solution.dart';
 import 'package:kikstartd/practice/centauri/solution.dart';
+import 'package:kikstartd/practice/citation/solution.dart';
 import 'package:kikstartd/practice/sample/solution.dart';
 
 const String problemKey = "problem";
@@ -48,6 +49,7 @@ ArgResults configureCommandLine(List<String> args) {
 Map<String, Solution> problems = {
   "practice_sample": SampleSolution(),
   "practice_centauri": CentauriSol(),
+  "practice_citation": ArticleCitation(),
 };
 
 Future<void> main(List<String> arguments) async {
