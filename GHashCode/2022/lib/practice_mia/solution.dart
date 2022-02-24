@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:hashd/core/solution.dart';
 import 'package:hashd/practice_mia/model.dart';
 
@@ -64,7 +63,7 @@ class PracticeMia extends Solution<DataServer> {
           CacheServer(id: idx, size: dataServer.sizeCache, latency: -1);
       dataServer.cacheServers.add(server);
     }
-    this.log(dataServer);
+    log(dataServer);
     return dataServer;
   }
 
@@ -104,7 +103,7 @@ class PracticeMia extends Solution<DataServer> {
         break;
       }
     }
-    this.log(input);
+    log(input);
     return input;
   }
 
