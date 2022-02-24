@@ -2,10 +2,12 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:args/args.dart';
+import 'package:hashd/2022/solution.dart';
 import 'package:hashd/core/io_model.dart';
 import 'package:hashd/core/solution.dart';
 import 'package:hashd/practice_ex/pizzeria_sol.dart';
 import 'package:hashd/practice_mia/solution.dart';
+import 'package:hashd/2022/solution.dart';
 import 'package:logger/logger.dart';
 import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
@@ -62,6 +64,7 @@ ArgResults configureCommandLine(List<String> args) {
 Map<String, Solution> problems = {
   "one_pizza": OnePizza(),
   "practice_mia": PracticeMia(),
+  "2022": SolutionProject(),
 };
 
 Future<void> runWorker(

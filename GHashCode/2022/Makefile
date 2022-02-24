@@ -36,13 +36,16 @@ compete_mia: clean build
 	zip -r $(PROBLEM).zip bin lib pubspec.yaml
 
 compete_2022: clean build
-	./hashd --problem $(PROBLEM) --input inputs/2022/a.in --output output/2022/a.out -s;
-	./hashd --problem $(PROBLEM) --input inputs/2022/b.in --output output/2022/b.out -s;
-	./hashd --problem $(PROBLEM) --input inputs/2022/c.in --output output/2022/c.out -s;
-	./hashd --problem $(PROBLEM) --input inputs/2022/d.in --output output/2022/d.out -s;
-	./hashd --problem $(PROBLEM) --input inputs/2022/e.in --output output/2022/e.out -s;
+	./hashd --problem $(PROBLEM) --input inputs/2022/a_an_example.in.txt --output output/2022/a.out -s;
+	./hashd --problem $(PROBLEM) --input inputs/2022/b_better_start_small.in.txt --output output/2022/b.out -s;
+	./hashd --problem $(PROBLEM) --input inputs/2022/c_collaboration.in.txt --output output/2022/c.out -s;
+	./hashd --problem $(PROBLEM) --input inputs/2022/d_dense_schedule.in.txt --output output/2022/d.out -s;
+	./hashd --problem $(PROBLEM) --input inputs/2022/e_exceptional_skills.in.txt --output output/2022/e.out -s;
+	./hashd --problem $(PROBLEM) --input inputs/2022/f_find_great_mentors.in.txt --output output/2022/f.out -s;
 	zip -r $(PROBLEM).zip bin lib pubspec.yaml
 
+zip_problem:
+	zip -r $(PROBLEM).zip bin lib pubspec.yaml
 
 compete: 
 	 @if [ $(FAST) = "off" ]; then\
