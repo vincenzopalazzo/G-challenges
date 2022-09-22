@@ -10,3 +10,6 @@
     </strong>
   </p>
 </div>
+
+
+## Migrated to https://codeberg.org/vincenzopalazzo/G-challenges
